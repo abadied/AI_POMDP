@@ -54,6 +54,8 @@ namespace POMDP
                     double reward = updatedBeliefState.Reward(a);
                     sumRewards += reward*Math.Pow(DiscountFactor,counter);
                     counter++;
+                    target = newState;
+                    cStepsPerTrial--;
                 }
                 rewards.Add(sumRewards);
             }
