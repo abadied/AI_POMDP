@@ -45,9 +45,23 @@ namespace POMDP
         public BeliefState Next(Action a, Observation o)
         {
             BeliefState bsNext = new BeliefState(m_dDomain);
-            
             //your code here
-
+            double normalizationFactor = 0.0;
+            foreach (State stateForUpdate in m_dDomain.States)
+            {
+                double updateProbabilityForState = 0.0;
+                foreach (State state in stateForUpdate.Successors(a)) //or in States????????????
+                {
+                    double transitionProbability = state.TransitionProbability(a: a, sTag: stateForUpdate);
+                    double beliefOfstate = this.m_dBeliefs[state];
+                    updateProbabilityForState += transitionProbability * beliefOfstate;
+                }
+                updateProbabilityForState *= stateForUpdate.ObservationProbability(a: a, o: o);
+                bsNext.AddBelief(stateForUpdate, updateProbabilityForState);
+                normalizationFactor += updateProbabilityForState;
+            }
+            foreach (State stateToNormalize in bsNext.m_dBeliefs.Keys)
+                bsNext.m_dBeliefs[stateToNormalize] /= normalizationFactor;
             Debug.Assert(bsNext.Validate());
             return bsNext;
         }
@@ -95,6 +109,21 @@ namespace POMDP
                 dSum += p.Value * p.Key.Reward(a);
             }
             return dSum;
+        }
+
+        public State RandomState()
+        {
+            State to_ret = null;
+            Random rnd = new Random();
+            int i = rnd.Next(0, this.m_dBeliefs.Keys.Count);
+            foreach (var state in this.m_dBeliefs.Keys)
+            {
+                if (i == 0)
+                    to_ret = state;
+                else
+                    i -= 1;
+            }
+            return to_ret;
         }
     }
 }

@@ -80,7 +80,7 @@ namespace POMDP
         {
             AlphaVector avBest = null, avCurrent = null;
             double dMaxValue = double.NegativeInfinity, dValue = 0.0;
-           //your code here
+            //your code here
             return avBest;
         }
 
@@ -136,4 +136,6 @@ namespace POMDP
         public void PointBasedVI(int cBeliefs, int cMaxIterations)
         {
             // your code here
+        }
+    }
 }

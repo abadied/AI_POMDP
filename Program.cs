@@ -12,19 +12,20 @@ namespace POMDP
     {
         static void Main(string[] args)
         {
-            FileStream fs = new FileStream("Debug.txt", FileMode.Create);
+            string path = System.IO.Directory.GetCurrentDirectory()+"\\Domains";
+            FileStream fs = new FileStream(path+"Debug.txt", FileMode.Create);
             Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
             Debug.Listeners.Add(new TextWriterTraceListener(fs));
 
-            MazeDomain maze = new MazeDomain("Maze2.txt");
+            MazeDomain maze = new MazeDomain(path+"Maze2.txt");
 
             PointBasedValueIteration pbvi = new PointBasedValueIteration(maze);
             pbvi.PointBasedVI(1000, 20);
 
-            //MDPValueFunction v = new MDPValueFunction(maze);
-            //v.ValueIteration(0.5);
+            MDPValueFunction v = new MDPValueFunction(maze);
+            v.ValueIteration(0.5);
 
-            //MostLikelyStatePolicy p1 = new MostLikelyStatePolicy(v);
+            MostLikelyStatePolicy p1 = new MostLikelyStatePolicy(v);
             //VotingPolicy p2 = new VotingPolicy(v);
             //QMDPPolicy p3 = new QMDPPolicy(v, maze);
 
