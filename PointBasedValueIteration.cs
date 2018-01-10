@@ -80,7 +80,17 @@ namespace POMDP
         {
             AlphaVector avBest = null, avCurrent = null;
             double dMaxValue = double.NegativeInfinity, dValue = 0.0;
+
             //your code here
+            foreach (var alpha_vector in m_lVectors)
+            {
+                avCurrent = alpha_vector;
+                dValue = avCurrent.InnerProduct(bs);
+                if (dValue > dMaxValue) {
+                    dMaxValue = dValue;
+                    avBest = avCurrent;
+                        }
+            }
             return avBest;
         }
 
@@ -136,6 +146,12 @@ namespace POMDP
         public void PointBasedVI(int cBeliefs, int cMaxIterations)
         {
             // your code here
+            List<BeliefState> setBeliefStates = CollectBeliefs(cBeliefs);
+            this.m_lVectors = new List<AlphaVector>();
+            for (int i=0; i < cMaxIterations; i++)
+            {
+
+            }
         }
     }
 }
