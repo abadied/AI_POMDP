@@ -50,8 +50,8 @@ namespace POMDP
                         probabilitiesForObservation.Add(new KeyValuePair<Observation, double>(obs, prob));
                     }
                     Observation newObservation = samplingObservations(probabilitiesForObservation);
-                    BeliefState updatedBeliefState = currentBeliefState.Next(a: a, o: newObservation);
-                    double reward = updatedBeliefState.Reward(a);
+                    double reward = currentBeliefState.Reward(a);
+                    currentBeliefState = currentBeliefState.Next(a: a, o: newObservation);
                     sumRewards += reward*Math.Pow(DiscountFactor,counter);
                     counter++;
                     target = newState;
