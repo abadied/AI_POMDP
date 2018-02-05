@@ -18,6 +18,8 @@ namespace POMDP
         public PointBasedValueIteration(Domain d)
         {
             m_dDomain = d;
+            m_valueFunction = new Dictionary<BeliefState, KeyValuePair<AlphaVector, double>>();
+            m_dGCache = new Dictionary<AlphaVector, Dictionary<Action, Dictionary<Observation, AlphaVector>>>();
         }
 
         public override Action GetAction(BeliefState bs)
@@ -196,8 +198,9 @@ namespace POMDP
                 else
                 {
                     copyBset.Remove(_bs);
-                    foreach (var kvp in m_valueFunction.Values)
+                    for (int i = 0; i < m_valueFunction.Values.Count;i++)
                     {
+                        KeyValuePair<AlphaVector, double> kvp = m_valueFunction.Values.ElementAt(i);
                         AlphaVector __alpha = kvp.Key;
                         double reward = __alpha.InnerProduct(_bs);
                         if (reward > kvp.Value)

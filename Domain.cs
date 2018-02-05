@@ -44,10 +44,12 @@ namespace POMDP
                     #endregion
                     State newState = target.Apply(a: a);
                     List<KeyValuePair<Observation, double>> probabilitiesForObservation = new List<KeyValuePair<Observation, double>>();
+                    double sum = 0.0;
                     foreach (Observation obs in Observations)
                     {
                         double prob = newState.ObservationProbability(a: a, o: obs);
-                        probabilitiesForObservation.Add(new KeyValuePair<Observation, double>(obs, prob));
+                        sum += prob;
+                        probabilitiesForObservation.Add(new KeyValuePair<Observation, double>(obs, sum));
                     }
                     Observation newObservation = samplingObservations(probabilitiesForObservation);
                     double reward = currentBeliefState.Reward(a);

@@ -60,9 +60,11 @@ namespace POMDP
                 bsNext.AddBelief(stateForUpdate, updateProbabilityForState);
                 normalizationFactor += updateProbabilityForState;
             }
-            for (int i=0;i<bsNext.m_dBeliefs.Keys.Count;i++)
-            foreach (State stateToNormalize in bsNext.m_dBeliefs.Keys)
+            for (int i = 0; i < bsNext.m_dBeliefs.Keys.Count; i++)
+            {
+                State stateToNormalize = bsNext.m_dBeliefs.Keys.ElementAt(i);
                 bsNext.m_dBeliefs[stateToNormalize] /= normalizationFactor;
+            }               
             Debug.Assert(bsNext.Validate());
             return bsNext;
         }
