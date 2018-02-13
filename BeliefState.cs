@@ -47,17 +47,20 @@ namespace POMDP
             BeliefState bsNext = new BeliefState(m_dDomain);
             //your code here
             double normalizationFactor = 0.0;
-            foreach (State stateForUpdate in m_dDomain.States)
+            foreach (State stateTag in m_dDomain.States)
             {
                 double updateProbabilityForState = 0.0;
-                foreach (State state in stateForUpdate.Successors(a)) //or in States????????????
+                foreach (State state in m_dDomain.States) //or in States????????????
                 {
-                    double transitionProbability = state.TransitionProbability(a: a, sTag: stateForUpdate);
-                    double beliefOfstate = this.m_dBeliefs[state];
-                    updateProbabilityForState += transitionProbability * beliefOfstate;
+                    if (state.Successors(a).Contains(stateTag))
+                    {
+                        double transitionProbability = state.TransitionProbability(a: a, sTag: stateTag);
+                        double beliefOfstate = this.m_dBeliefs[state];
+                        updateProbabilityForState += transitionProbability * beliefOfstate;
+                    }
                 }
-                updateProbabilityForState *= stateForUpdate.ObservationProbability(a: a, o: o);
-                bsNext.AddBelief(stateForUpdate, updateProbabilityForState);
+                updateProbabilityForState *= stateTag.ObservationProbability(a: a, o: o);
+                bsNext.AddBelief(stateTag, updateProbabilityForState);
                 normalizationFactor += updateProbabilityForState;
             }
             for (int i = 0; i < bsNext.m_dBeliefs.Keys.Count; i++)

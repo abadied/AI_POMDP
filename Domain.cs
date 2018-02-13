@@ -27,21 +27,10 @@ namespace POMDP
                 BeliefState currentBeliefState = InitialBelief;
                 double sumRewards = 0.0;
                 int counter = 0;
-                while ((!IsGoalState(target) && counter<cStepsPerTrial))
-                {
-                    Action a = p.GetAction(InitialBelief);
-                    #region
-                    /*
-                    List<State> states = (List<State>)initialState.Successors(a);
-                    List<KeyValuePair<State, double>> probabilitiesForNewStates = new List<KeyValuePair<State, double>>();
-                    foreach (State state in states)
+                while ((!IsGoalState(target)))
+                    //while ((!IsGoalState(target) && counter < cStepsPerTrial))
                     {
-                        double prob = initialState.TransitionProbability(a: a, sTag: state);
-                        probabilitiesForNewStates.Add(new KeyValuePair<State, double>(state, prob));
-                    }
-                    State newState = sampling(probabilitiesForNewStates);
-                    */
-                    #endregion
+                    Action a = p.GetAction(currentBeliefState);
                     State newState = target.Apply(a: a);
                     List<KeyValuePair<Observation, double>> probabilitiesForObservation = new List<KeyValuePair<Observation, double>>();
                     double sum = 0.0;
@@ -57,7 +46,6 @@ namespace POMDP
                     sumRewards += reward*Math.Pow(DiscountFactor,counter);
                     counter++;
                     target = newState;
-                    cStepsPerTrial--;
                 }
                 rewards.Add(sumRewards);
             }

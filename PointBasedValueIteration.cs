@@ -8,17 +8,17 @@ namespace POMDP
 {
     class PointBasedValueIteration : Policy
     {
-        
+
         private Domain m_dDomain;
         private List<AlphaVector> m_lVectors;
         private Dictionary<AlphaVector, Dictionary<Action, Dictionary<Observation, AlphaVector>>> m_dGCache;
-        private Dictionary<BeliefState, KeyValuePair<AlphaVector, double>> m_valueFunction; 
+        private Dictionary<BeliefState, AlphaVector> m_valueFunction;
 
 
         public PointBasedValueIteration(Domain d)
         {
             m_dDomain = d;
-            m_valueFunction = new Dictionary<BeliefState, KeyValuePair<AlphaVector, double>>();
+            m_valueFunction = new Dictionary<BeliefState, AlphaVector>();
             m_dGCache = new Dictionary<AlphaVector, Dictionary<Action, Dictionary<Observation, AlphaVector>>>();
         }
 
@@ -91,10 +91,11 @@ namespace POMDP
             {
                 avCurrent = G(bs, action);
                 dValue = avCurrent.InnerProduct(bs);
-                if (dValue > dMaxValue) {
+                if (dValue > dMaxValue)
+                {
                     dMaxValue = dValue;
                     avBest = avCurrent;
-                        }
+                }
             }
             return avBest;
         }
@@ -152,18 +153,20 @@ namespace POMDP
         {
             // your code here
             List<BeliefState> setBeliefStates = CollectBeliefs(cBeliefs);
-            this.m_lVectors = new List<AlphaVector>(this.m_dDomain.Actions.Count());
-            foreach (var action in this.m_dDomain.Actions)
+            this.m_lVectors = new List<AlphaVector>(this.m_dDomain.States.Count());
+            foreach (BeliefState bs in setBeliefStates)
             {
-                AlphaVector curr = new AlphaVector(action);
-                foreach (State state in this.m_dDomain.States)
-                {
-                    curr[state] = state.Reward(action);
-                }
-                m_lVectors.Add(curr);
+                m_lVectors.Add(new AlphaVector());
             }
+             List<AlphaVector> _m_lVectors = new List<AlphaVector>();
+            foreach (BeliefState bs in setBeliefStates)
+            {
+                AlphaVector curr = backup(bs);
+                _m_lVectors.Add(curr);
+            }
+            this.m_lVectors = new List<AlphaVector>(_m_lVectors);
             initialValueFunction(setBeliefStates);
-            for (int i = 0; i < cMaxIterations-1; i++)
+            for (int i = 0; i < cMaxIterations; i++)
             {
                 pruneAlphaVector(setBeliefStates);
             }
@@ -177,60 +180,70 @@ namespace POMDP
             List<BeliefState> copyBset = new List<BeliefState>(bsSet);
             while (copyBset.Any())
             {
-                BeliefState _bs = copyBset.First();
+                BeliefState _bs = copyBset.ElementAt(0);
                 AlphaVector _alpha = backup(_bs);
                 double _reward = _alpha.InnerProduct(_bs);
-                if (this.m_valueFunction[_bs].Value < _reward)
+                if (this.m_valueFunction[_bs].InnerProduct(_bs) < _reward)
                 {
-                    this.m_valueFunction[_bs] = new KeyValuePair<AlphaVector, double>(_alpha, _reward);
+                    this.m_valueFunction[_bs] = _alpha;
                     copyBset.Remove(_bs);
-                    while(copyBset.Any())
+                    List<BeliefState> copyBset_inner = new List<BeliefState>(copyBset);
+                    foreach (BeliefState temp_bs in copyBset_inner)
                     {
-                        BeliefState __bs = copyBset.First();
-                        double __reward = _alpha.InnerProduct(__bs);
-                        if (this.m_valueFunction[__bs].Value < __reward)
+                        double __reward = _alpha.InnerProduct(temp_bs);
+                        double curr_val = this.m_valueFunction[temp_bs].InnerProduct(temp_bs);
+                        if (curr_val < __reward)
                         {
-                            this.m_valueFunction[__bs] = new KeyValuePair<AlphaVector, double>(_alpha, __reward);
-                            copyBset.Remove(__bs);
+                            this.m_valueFunction[temp_bs] = _alpha;
+                            copyBset.Remove(temp_bs);
                         }
+
                     }
                 }
+
                 else
                 {
                     copyBset.Remove(_bs);
-                    for (int i = 0; i < m_valueFunction.Values.Count;i++)
+                    double max_reward = double.NegativeInfinity;
+                    AlphaVector max_alpha = null;
+                    foreach (AlphaVector alpha in m_lVectors)
                     {
-                        KeyValuePair<AlphaVector, double> kvp = m_valueFunction.Values.ElementAt(i);
-                        AlphaVector __alpha = kvp.Key;
-                        double reward = __alpha.InnerProduct(_bs);
-                        if (reward > kvp.Value)
-                            this.m_valueFunction[_bs] = new KeyValuePair<AlphaVector, double>(__alpha, reward);
+                        double reward = alpha.InnerProduct(_bs);
+                        if (reward > max_reward)
+                        {
+                            max_reward = reward;
+                            max_alpha = alpha;
+                        }
                     }
+                    this.m_valueFunction[_bs] = max_alpha;
+
                 }
             }
+            this.m_lVectors = new List<AlphaVector>();
+                foreach (AlphaVector updated_alpha in m_valueFunction.Values)
+                        this.m_lVectors.Add(updated_alpha);            
         }
         private void initialValueFunction(List<BeliefState> bsSet)
         {
             foreach (var bs in bsSet)
             {
-                this.m_valueFunction.Add(bs, new KeyValuePair<AlphaVector, double>());
+                
                 bool firstAlpha = true;
                 foreach (var alpha in this.m_lVectors)
                 {
                     if (firstAlpha)
                     {
-                        this.m_valueFunction[bs] = new KeyValuePair<AlphaVector, double>(alpha, Double.NegativeInfinity);
+                        this.m_valueFunction.Add(bs, alpha);
                         firstAlpha = false;
                     }
                     else
                     {
                         Action _action = alpha.Action;
                         double _reward = bs.Reward(_action);
-                        if (this.m_valueFunction[bs].Value < _reward)
-                            this.m_valueFunction[bs] = new KeyValuePair<AlphaVector, double>(alpha, _reward);
+                        if (this.m_valueFunction[bs].InnerProduct(bs) < _reward)
+                            this.m_valueFunction[bs] =alpha;
                     }
                 }
-
             }
         }
     }
