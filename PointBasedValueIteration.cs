@@ -171,9 +171,6 @@ namespace POMDP
                 pruneAlphaVector(setBeliefStates);
             }
 
-            //initialize all alphavectors with zeros
-            //create value function (size of beliefstates) initialize with zeros
-            //while condition holds for each belief state call backup and update value function asd follow -> VF(i) += gamma * B_i * Alpha_i 
         }
         private void pruneAlphaVector(List<BeliefState> bsSet)
         {

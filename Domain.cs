@@ -86,12 +86,12 @@ namespace POMDP
             return to_ret;
         }
 
-        private static Observation samplingObservations(List<KeyValuePair<Observation, double>> states_probabilities)
+        private static Observation samplingObservations(List<KeyValuePair<Observation, double>> observations_probabilities)
         {
             Random random = new Random();
             Observation to_ret = null;
             double rnd = random.NextDouble();
-            foreach (KeyValuePair<Observation, double> kp in states_probabilities)
+            foreach (KeyValuePair<Observation, double> kp in observations_probabilities)
             {
                 if (rnd <= kp.Value)
                 {
