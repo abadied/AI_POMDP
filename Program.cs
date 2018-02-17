@@ -17,10 +17,10 @@ namespace POMDP
             Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
             Debug.Listeners.Add(new TextWriterTraceListener(fs));
 
-            MazeDomain maze = new MazeDomain(path + "/Maze2.txt");
+            MazeDomain maze = new MazeDomain(path + "/Maze3.txt");
 
             PointBasedValueIteration pbvi = new PointBasedValueIteration(maze);
-            pbvi.PointBasedVI(100, 30);
+            pbvi.PointBasedVI(100, 20);
 
             //MDPValueFunction v = new MDPValueFunction(maze);
             //v.ValueIteration(0.5);

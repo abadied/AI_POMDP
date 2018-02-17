@@ -27,8 +27,8 @@ namespace POMDP
                 BeliefState currentBeliefState = InitialBelief;
                 double sumRewards = 0.0;
                 int counter = 0;
-                while ((!IsGoalState(target)))
-                    //while ((!IsGoalState(target) && counter < cStepsPerTrial))
+                //while ((!IsGoalState(target)))
+                while ((!IsGoalState(target) && counter < cStepsPerTrial))
                     {
                     Action a = p.GetAction(currentBeliefState);
                     State newState = target.Apply(a: a);

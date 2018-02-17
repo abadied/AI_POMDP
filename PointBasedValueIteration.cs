@@ -175,6 +175,7 @@ namespace POMDP
         private void pruneAlphaVector(List<BeliefState> bsSet)
         {
             List<BeliefState> copyBset = new List<BeliefState>(bsSet);
+            List<AlphaVector> temp_lVectors = new List<AlphaVector>();
             while (copyBset.Any())
             {
                 BeliefState _bs = copyBset.ElementAt(0);
@@ -183,6 +184,7 @@ namespace POMDP
                 if (this.m_valueFunction[_bs].InnerProduct(_bs) < _reward)
                 {
                     this.m_valueFunction[_bs] = _alpha;
+                    temp_lVectors.Add(_alpha);
                     copyBset.Remove(_bs);
                     List<BeliefState> copyBset_inner = new List<BeliefState>(copyBset);
                     foreach (BeliefState temp_bs in copyBset_inner)
@@ -212,13 +214,20 @@ namespace POMDP
                             max_alpha = alpha;
                         }
                     }
+                    if(!temp_lVectors.Contains(max_alpha))
+                        temp_lVectors.Add(max_alpha);
                     this.m_valueFunction[_bs] = max_alpha;
 
                 }
             }
-            this.m_lVectors = new List<AlphaVector>();
-                foreach (AlphaVector updated_alpha in m_valueFunction.Values)
-                        this.m_lVectors.Add(updated_alpha);            
+            //this.m_lVectors = new List<AlphaVector>();
+            this.m_lVectors = temp_lVectors;
+            //foreach (AlphaVector updated_alpha in m_valueFunction.Values)
+            //{
+             //   if(!this.m_lVectors.Contains(updated_alpha))
+              //      this.m_lVectors.Add(updated_alpha);
+            //}
+                                  
         }
         private void initialValueFunction(List<BeliefState> bsSet)
         {
