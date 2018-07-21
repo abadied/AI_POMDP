@@ -57,5 +57,55 @@ namespace POMDP
                 lastState = kvp.Key;
             }
         }
+        
+
+        public int ChoosePath()
+        {
+            Random rand = new Random();
+            double r = rand.NextDouble();
+            double sumOne = 0;
+            double sumZero = 0;
+            List<KeyValuePair<int, double>> oneList = probDictionary[new int[] { currentState, 1 }];
+            List<KeyValuePair<int, double>> zeroList = probDictionary[new int[] { currentState, 0 }];
+            foreach(KeyValuePair<int, double> kvp in oneList)
+            {
+                sumOne += kvp.Value;
+            }
+
+            foreach(KeyValuePair<int, double> kvp in zeroList)
+            {
+                sumZero += kvp.Value;
+            }
+            if(sumZero > sumOne)
+            {
+                if(r > sumOne)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            else
+            {
+                if (r > sumZero)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+        public int GetAutomataResult(int symbol)
+        {
+            this.SetNextState(symbol);
+            int nextSymbol = this.ChoosePath();
+            this.SetNextState(nextSymbol);
+            return nextSymbol;
+
+        }
     }
 }
