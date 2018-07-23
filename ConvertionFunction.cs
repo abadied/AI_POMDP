@@ -7,15 +7,29 @@ namespace POMDP
 {
     class ConvertionFunction
     {
-        private int boardSize, numOfActions, numOfObservation;
-        private int range;
-        private Dictionary<int[], int> functionMapping = new Dictionary<int[], int>();
-        public ConvertionFunction(int boardSize, int numOfActions, int numOfObservation)
+        private Dictionary<string, int> functionMapping = new Dictionary<string, int>();
+        public ConvertionFunction(MazeAction[] Actions, MazeObservation[] Observations)
         {
-            this.boardSize = boardSize;
-            this.numOfActions = numOfActions;
-            this.numOfObservation = numOfObservation;
-            range = numOfActions * numOfObservation * (int)Math.Log(boardSize);
+            int numOfActions = Actions.Count();
+            int numOfObservation = Observations.Count();
+            int obsIndex = 0;
+            foreach(MazeAction action in Actions)
+            {
+                foreach(MazeObservation obs in Observations)
+                {
+                    List<string> observationString = obs.getObservationString();
+                    observationString.Add(action.ToString());
+                    functionMapping.Add(string.Join(" ", observationString.ToArray()), obsIndex);
+                    obsIndex++;
+                }
+            }
+        }
+
+        public int getIndex(MazeAction action, MazeObservation obs)
+        {
+            List<string> key = obs.getObservationString();
+            key.Add(action.ToString());
+            return functionMapping[string.Join(" ", key.ToArray())];
         }
     }
 }
