@@ -16,8 +16,23 @@ namespace POMDP
             FileStream fs = new FileStream(path + "Debug.txt", FileMode.Create);
             Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
             Debug.Listeners.Add(new TextWriterTraceListener(fs));
+            MazeDomain maze = new MazeDomain(path + "/Domains/Maze3.txt");
 
-            MazeDomain maze = new MazeDomain(path + "/Maze3.txt");
+            // POMDP PROB AUTOMATA //
+            List<MazeAction> actions = new List<MazeAction> {
+            new MazeAction("TurnLeft"),
+            new MazeAction("TurnRight"),
+            new MazeAction("Forward")
+            };
+
+            List<MazeObservation> observations = new List<MazeObservation>();
+            for (int i = 0; i < 16; i++)
+                observations.Add(new MazeObservation(i));
+
+            ConvertionFunction cf = new ConvertionFunction(actions, observations);
+
+            // POMDP PROB AUTOMATA //
+
 
             PointBasedValueIteration pbvi = new PointBasedValueIteration(maze);
             pbvi.PointBasedVI(100, 20);

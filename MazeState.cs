@@ -11,6 +11,8 @@ namespace POMDP
 
         public int X{ get; private set;}
         public int Y{ get; private set;}
+        public double sizeDomX { get; private set; }
+        public double sizeDomY { get; private set; }
         public enum Direction { North, East, South, West };
         public Direction CurrentDirection { get; private set; }
         private MazeDomain m_mdMaze;
@@ -21,6 +23,17 @@ namespace POMDP
             Y = iY;
             CurrentDirection = d;
             m_mdMaze = md;
+            sizeDomX = md.Width;
+            sizeDomY = md.Height;
+            int numOfBits = Convert.ToInt32(Math.Ceiling(Math.Log(sizeDomX * sizeDomY, 2)));
+            int[] bits = new int[numOfBits];
+            int value = Convert.ToInt32(X * sizeDomX + Y);
+            for(int i = 0; i < numOfBits; i++)
+            {
+                int currBit = value % 2;
+                value = value / 2;
+                bits[i] = currBit;
+            }
         }
 
         public Direction TurnLeft(Direction d)

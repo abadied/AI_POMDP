@@ -57,6 +57,9 @@
     <Compile Include="Action.cs" />
     <Compile Include="AlphaVector.cs" />
     <Compile Include="BeliefState.cs" />
+    <Compile Include="ConvertionFunction.cs" />
+    <Compile Include="PFSAutomata.cs" />
+    <Compile Include="PFSAParser.cs" />
     <Compile Include="Domain.cs" />
     <Compile Include="MazeAction.cs" />
     <Compile Include="MazeDomain.cs" />

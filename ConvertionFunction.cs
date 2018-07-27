@@ -8,7 +8,7 @@ namespace POMDP
     class ConvertionFunction
     {
         private Dictionary<string, int> functionMapping = new Dictionary<string, int>();
-        public ConvertionFunction(MazeAction[] Actions, MazeObservation[] Observations)
+        public ConvertionFunction(List<MazeAction> Actions, List<MazeObservation> Observations)
         {
             int numOfActions = Actions.Count();
             int numOfObservation = Observations.Count();
