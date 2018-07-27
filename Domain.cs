@@ -56,6 +56,39 @@ namespace POMDP
             }
             return (to_ret) / cTrials;
         }
+
+        public void WriteObservationsFile(string filePath, ConvertionFunction cf, Policy p, int numberOfIterations, int numberOfSteps, int bitLocation)
+        {
+            string[] lines = new string[numberOfIterations];
+            for (int i = 0; i < numberOfIterations; i++)
+            {
+                State target = sampleInitialState();
+                int counter = 0;
+                string line = "";
+                while (counter < numberOfSteps)
+                {
+
+                    Action a = p.GetRandAction(target);
+                    State newState = target.Apply(a: a);
+                    List<KeyValuePair<Observation, double>> probabilitiesForObservation = new List<KeyValuePair<Observation, double>>();
+                    double sum = 0.0;
+                    foreach (Observation obs in Observations)
+                    {
+                        double prob = newState.ObservationProbability(a: a, o: obs);
+                        sum += prob;
+                        probabilitiesForObservation.Add(new KeyValuePair<Observation, double>(obs, sum));
+                    }
+                    Observation newObservation = samplingObservations(probabilitiesForObservation);
+                    line = line + " " + target.GetBitValue(bitLocation) + " " + cf.getIndex(a, newObservation).ToString();
+
+                    counter++;
+                    target = newState;
+                }
+                lines[i] = line;
+            }
+            System.IO.File.WriteAllLines(filePath, lines);
+        }
+
         //sample state from initial belief state
         private State sampleInitialState()
         {

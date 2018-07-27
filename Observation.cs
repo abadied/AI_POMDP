@@ -5,7 +5,8 @@ using System.Text;
 
 namespace POMDP
 {
-    class Observation
+    abstract class Observation
     {
+        public abstract List<string> getObservationString();
     }
 }

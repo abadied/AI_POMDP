@@ -23,5 +23,11 @@ namespace POMDP
             int idx = RandomGenerator.Next(m_lActions.Count);
             return m_lActions[idx];
         }
+
+        public override Action GetRandAction(State s)
+        {
+            int idx = RandomGenerator.Next(m_lActions.Count);
+            return m_lActions[idx];
+        }
     }
 }

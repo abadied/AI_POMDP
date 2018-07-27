@@ -11,6 +11,7 @@ namespace POMDP
 
         public int X{ get; private set;}
         public int Y{ get; private set;}
+        public int[] bits { get; private set; }
         public double sizeDomX { get; private set; }
         public double sizeDomY { get; private set; }
         public enum Direction { North, East, South, West };
@@ -26,7 +27,7 @@ namespace POMDP
             sizeDomX = md.Width;
             sizeDomY = md.Height;
             int numOfBits = Convert.ToInt32(Math.Ceiling(Math.Log(sizeDomX * sizeDomY, 2)));
-            int[] bits = new int[numOfBits];
+            bits = new int[numOfBits];
             int value = Convert.ToInt32(X * sizeDomX + Y);
             for(int i = 0; i < numOfBits; i++)
             {
@@ -191,6 +192,11 @@ namespace POMDP
                     return o;
             }
             return null;//bugbug
+        }
+
+        public override string GetBitValue(int idx)
+        {
+            return bits[idx].ToString();
         }
     }
 }

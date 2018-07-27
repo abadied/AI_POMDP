@@ -8,5 +8,6 @@ namespace POMDP
     abstract class Policy
     {
         public abstract Action GetAction(BeliefState bs);
+        public abstract Action GetRandAction(State s);
     }
 }

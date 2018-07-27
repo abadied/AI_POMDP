@@ -8,14 +8,14 @@ namespace POMDP
     class ConvertionFunction
     {
         private Dictionary<string, int> functionMapping = new Dictionary<string, int>();
-        public ConvertionFunction(List<MazeAction> Actions, List<MazeObservation> Observations)
+        public ConvertionFunction(List<Action> Actions, List<Observation> Observations)
         {
             int numOfActions = Actions.Count();
             int numOfObservation = Observations.Count();
-            int obsIndex = 0;
-            foreach(MazeAction action in Actions)
+            int obsIndex = 2; // 0 and 1 are for relevant bit
+            foreach(Action action in Actions)
             {
-                foreach(MazeObservation obs in Observations)
+                foreach(Observation obs in Observations)
                 {
                     List<string> observationString = obs.getObservationString();
                     observationString.Add(action.ToString());
@@ -25,7 +25,7 @@ namespace POMDP
             }
         }
 
-        public int getIndex(MazeAction action, MazeObservation obs)
+        public int getIndex(Action action, Observation obs)
         {
             List<string> key = obs.getObservationString();
             key.Add(action.ToString());

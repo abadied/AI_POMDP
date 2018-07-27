@@ -13,5 +13,6 @@ namespace POMDP
         public abstract double ObservationProbability(Action a, Observation o);
         public abstract double Reward(Action a);
         public abstract Observation RandomObservation(Action a);
+        public abstract string GetBitValue(int idx);
     }
 }

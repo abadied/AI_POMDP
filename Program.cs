@@ -34,25 +34,25 @@ namespace POMDP
             // POMDP PROB AUTOMATA //
 
 
-            PointBasedValueIteration pbvi = new PointBasedValueIteration(maze);
-            pbvi.PointBasedVI(100, 20);
+            //PointBasedValueIteration pbvi = new PointBasedValueIteration(maze);
+            //pbvi.PointBasedVI(100, 20);
 
             //MDPValueFunction v = new MDPValueFunction(maze);
             //v.ValueIteration(0.5);
 
-            //RandomPolicy p0 = new RandomPolicy(maze);
+            RandomPolicy p0 = new RandomPolicy(maze);
             //MostLikelyStatePolicy p1 = new MostLikelyStatePolicy(v);
             //VotingPolicy p2 = new VotingPolicy(v);
             //QMDPPolicy p3 = new QMDPPolicy(v, maze);
 
-            //double dADR1 = maze.ComputeAverageDiscountedReward(p1, 100, 100);
+            double dADR1 = maze.ComputeAverageDiscountedReward(p1, 100, 100);
             //double dADR2 = maze.ComputeAverageDiscountedReward(p2, 100, 100);
             //double dADR3 = maze.ComputeAverageDiscountedReward(p3, 100, 100);
-            double dADR4 = maze.ComputeAverageDiscountedReward(pbvi, 100, 100);
+            //double dADR4 = maze.ComputeAverageDiscountedReward(pbvi, 100, 100);
 
-            MazeViewer viewer = new MazeViewer(maze);
-            viewer.Start();
-            maze.SimulatePolicy(pbvi, 10, viewer);
+            //MazeViewer viewer = new MazeViewer(maze);
+            //viewer.Start();
+            //maze.SimulatePolicy(pbvi, 10, viewer);
 
             Debug.Close();
         }

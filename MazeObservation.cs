@@ -48,7 +48,7 @@ namespace POMDP
                 dProb *= (1 - WALL_DETECTION_ACCURACY);
             return dProb;
         }
-        public List<string> getObservationString()
+        public override List<string> getObservationString()
         {
             return new List<string>( new string[] {FrontWall.ToString(), LeftWall.ToString(), RightWall.ToString(), BackWall.ToString() });
         }
