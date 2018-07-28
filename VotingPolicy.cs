@@ -17,5 +17,17 @@ namespace POMDP
             //your code here
             throw new NotImplementedException();
         }
+
+        public override Action GetRandAction(State s)
+        {
+            //your code here
+            throw new NotImplementedException();
+        }
+
+        public override Action GetAction(State s)
+        {
+            //your code here
+            throw new NotImplementedException();
+        }
     }
 }

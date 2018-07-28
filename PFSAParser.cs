@@ -7,9 +7,9 @@ namespace POMDP
 {
     class PFSAParser
     {
-        public List<string> automatasPathes;
+        public string[] automatasPathes;
 
-        public PFSAParser(List<string> pathes)
+        public PFSAParser(string[] pathes)
         {
             automatasPathes = pathes;
         }

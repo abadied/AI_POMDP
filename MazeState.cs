@@ -31,9 +31,17 @@ namespace POMDP
             int value = Convert.ToInt32(X * sizeDomX + Y);
             for(int i = 0; i < numOfBits; i++)
             {
-                int currBit = value % 2;
-                value = value / 2;
-                bits[i] = currBit;
+                if(value >= 0)
+                {
+                    int currBit = value % 2;
+                    value = value / 2;
+                    bits[i] = currBit;
+                }
+                else
+                {
+                    bits[i] = -1;
+                }
+
             }
         }
 

@@ -19,6 +19,8 @@ namespace POMDP
             MazeDomain maze = new MazeDomain(path + "/Domains/Maze3.txt");
 
             // POMDP PROB AUTOMATA //
+
+            // Create obs files
             List<Action> actions = new List<Action> {
             new MazeAction("TurnLeft"),
             new MazeAction("TurnRight"),
@@ -32,12 +34,40 @@ namespace POMDP
             ConvertionFunction cf = new ConvertionFunction(actions, observations);
             RandomPolicy p0 = new RandomPolicy(maze);
 
-            string firstPath = "";
+            string startPath = "obs";
+            string endPath = ".txt";
             int numberOfIterations = 100;
             int numberOfSteps = 100;
             int currBit = 0;
-            // TODO: add for loop that creates obs file for each bit ( add new paths as well).
-            maze.WriteObservationsFile(firstPath, cf, p0, numberOfIterations, numberOfSteps, currBit);
+            int numOfAutomatas = Convert.ToInt32(Math.Ceiling(Math.Log(maze.Width * maze.Height, 2)));
+            for (currBit = 0; currBit < numOfAutomatas; currBit++)
+            {
+                string Path = startPath + currBit.ToString() + endPath;
+                maze.WriteObservationsFile(Path, cf, p0, numberOfIterations, numberOfSteps, currBit);
+            }
+
+            // Read Prob automatas
+            string[] automataFilesPathes = new string[numOfAutomatas];
+            string startAutomataPath = "automata";
+            string endAutomataPath = ".txt";
+            for(int i = 0; i < numOfAutomatas; i++)
+            {
+                automataFilesPathes[i] = startAutomataPath + i.ToString() + endAutomataPath;
+            }
+
+            PFSAParser pfsaParser = new PFSAParser(automataFilesPathes);
+            List<PFSAutomata> pfsas = pfsaParser.GetAutomatas();
+
+            // Run MDP Valueiteration 
+            double epsilon = 0.5;
+            MDPValueFunction mdpVf = new MDPValueFunction(maze);
+            mdpVf.ValueIteration(epsilon);
+
+            // Simulate trail using the pfsas
+            MazeViewer viewer = new MazeViewer(maze);
+            viewer.Start();
+            maze.SimulatePolicyPfsa(mdpVf, 10, viewer, pfsas, cf);
+
             // POMDP PROB AUTOMATA //
 
 
@@ -47,11 +77,10 @@ namespace POMDP
             //MDPValueFunction v = new MDPValueFunction(maze);
             //v.ValueIteration(0.5);
 
-            RandomPolicy p0 = new RandomPolicy(maze);
             //MostLikelyStatePolicy p1 = new MostLikelyStatePolicy(v);
             //VotingPolicy p2 = new VotingPolicy(v);
             //QMDPPolicy p3 = new QMDPPolicy(v, maze);
-            
+
             //double dADR1 = maze.ComputeAverageDiscountedReward(p1, 100, 100);
             //double dADR2 = maze.ComputeAverageDiscountedReward(p2, 100, 100);
             //double dADR3 = maze.ComputeAverageDiscountedReward(p3, 100, 100);

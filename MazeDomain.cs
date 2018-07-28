@@ -83,6 +83,42 @@ namespace POMDP
             }
         }
 
+        public void SimulatePolicyPfsa(Policy p, int cTrials, MazeViewer viewer, List<PFSAutomata> pfsas, ConvertionFunction cf)
+        {
+            int iTrial = 0;
+            for (iTrial = 0; iTrial < cTrials; iTrial++)
+            {
+                SimulateTrialPfsa(p, viewer, pfsas, cf);
+            }
+        }
+
+        // TODO: change!!!
+        private void SimulateTrialPfsa(Policy p, MazeViewer viewer, List<PFSAutomata> pfsas, ConvertionFunction cf)
+        {
+            BeliefState bsCurrent = InitialBelief, bsNext = null;
+            State sCurrent = bsCurrent.RandomState(), sNext = null;
+            Action a = null;
+            Observation o = null;
+            viewer.CurrentState = (MazeState)sCurrent;
+            viewer.CurrentBelief = bsCurrent;
+            while (!IsGoalState(sCurrent))
+            {
+                a = p.GetAction(sCurrent);
+                o = sCurrent.RandomObservation(a);
+                int nextStateIndex = cf.getIndex(a, o);
+                sCurrent = getNextState(nextStateIndex);
+                viewer.CurrentState = (MazeState)sCurrent;
+                viewer.CurrentObservation = (MazeObservation)o;
+                Thread.Sleep(500);
+            }
+        }
+        private State getNextState(int idx)
+        {
+            // TODO: implement!!
+            throw new NotImplementedException();
+        }
+
+
         private void SimulateTrial(Policy p, MazeViewer viewer)
         {
             BeliefState bsCurrent = InitialBelief, bsNext = null;

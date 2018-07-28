@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace POMDP
 {
-    class MDPValueFunction
+    class MDPValueFunction: Policy
     {
         private Dictionary<State, Dictionary<Action, double>> m_dQValues;
         private Dictionary<State, double> m_dValues;
@@ -37,13 +37,24 @@ namespace POMDP
             return m_dQValues[s][a];
         }
 
-        public Action GetAction(State s)
+        public override Action GetAction(State s)
         {
             if (m_dBestActions.ContainsKey(s))
                 return m_dBestActions[s];
             return null;
         }
 
+        public override Action GetRandAction(State s)
+        {
+            //your code here
+            throw new NotImplementedException();
+        }
+
+        public override Action GetAction(BeliefState bs)
+        {
+            //your code here
+            throw new NotImplementedException();
+        }
         private Dictionary<State,List<State>> Init(double dInitValue)
         {
             Dictionary<State, List<State>> dPreds = new Dictionary<State, List<State>>();

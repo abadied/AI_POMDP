@@ -29,7 +29,17 @@ namespace POMDP
             return avBest.Action;
         }
 
+        public override Action GetRandAction(State s)
+        {
+            //your code here
+            throw new NotImplementedException();
+        }
 
+        public override Action GetAction(State s)
+        {
+            //your code here
+            throw new NotImplementedException();
+        }
         private AlphaVector G(Action a, Observation o, AlphaVector av)
         {
             if (!m_dGCache.ContainsKey(av))

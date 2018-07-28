@@ -9,5 +9,6 @@ namespace POMDP
     {
         public abstract Action GetAction(BeliefState bs);
         public abstract Action GetRandAction(State s);
+        public abstract Action GetAction(State s);
     }
 }
