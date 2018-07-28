@@ -95,27 +95,49 @@ namespace POMDP
         // TODO: change!!!
         private void SimulateTrialPfsa(Policy p, MazeViewer viewer, List<PFSAutomata> pfsas, ConvertionFunction cf)
         {
-            BeliefState bsCurrent = InitialBelief, bsNext = null;
-            State sCurrent = bsCurrent.RandomState(), sNext = null;
+            BeliefState bsCurrent = InitialBelief;
+            State sCurrent = bsCurrent.RandomState();
             Action a = null;
             Observation o = null;
+            int numOfBits = pfsas.Count();
+            int numberOfYBits = Convert.ToInt32(Math.Ceiling(Math.Log(Height, 2)));
+            int[] bits = new int[numOfBits];
             viewer.CurrentState = (MazeState)sCurrent;
             viewer.CurrentBelief = bsCurrent;
             while (!IsGoalState(sCurrent))
             {
                 a = p.GetAction(sCurrent);
                 o = sCurrent.RandomObservation(a);
-                int nextStateIndex = cf.getIndex(a, o);
-                sCurrent = getNextState(nextStateIndex);
+                int nextStateIndex = cf.GetIndex(a, o);
+                for(int i = 0; i < numOfBits; i++)
+                {
+                    bits[i] = pfsas[i].GetAutomataResult(nextStateIndex);
+                }
+                sCurrent = GetNextState(bits, numberOfYBits);
                 viewer.CurrentState = (MazeState)sCurrent;
                 viewer.CurrentObservation = (MazeObservation)o;
                 Thread.Sleep(500);
             }
         }
-        private State getNextState(int idx)
+        private State GetNextState(int[] bits, int numOfYBits)
         {
             // TODO: implement!!
-            throw new NotImplementedException();
+            int directionNum = bits[0] + bits[1] * 2;
+            int iY = 0;
+            int iX = 0;
+            int multyplier = 4;
+            for(int i = 2; i < numOfYBits; i++)
+            {
+                iY += bits[i] * multyplier;
+                multyplier *= 2;
+            }
+            for (int i = numOfYBits; i < bits.Length; i++)
+            {
+                iX += bits[i] * multyplier;
+                multyplier *= 2;
+            }
+
+            return new MazeState(iX, iY, (POMDP.MazeState.Direction)Enum.ToObject(typeof(POMDP.MazeState.Direction), directionNum), this);
         }
 
 

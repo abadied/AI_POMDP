@@ -26,9 +26,10 @@ namespace POMDP
             m_mdMaze = md;
             sizeDomX = md.Width;
             sizeDomY = md.Height;
-            int numOfBits = Convert.ToInt32(Math.Ceiling(Math.Log(sizeDomX * sizeDomY, 2)));
+            int amountOfDirections = 4;
+            int numOfBits = Convert.ToInt32(Math.Ceiling(Math.Log(sizeDomX * sizeDomY * amountOfDirections, 2)));
             bits = new int[numOfBits];
-            int value = Convert.ToInt32(X * sizeDomX + Y);
+            int value = Convert.ToInt32((X * sizeDomX + Y) * amountOfDirections + Convert.ToInt32(d)); // TODO: Test!
             for(int i = 0; i < numOfBits; i++)
             {
                 if(value >= 0)

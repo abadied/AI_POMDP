@@ -79,7 +79,7 @@ namespace POMDP
                         probabilitiesForObservation.Add(new KeyValuePair<Observation, double>(obs, sum));
                     }
                     Observation newObservation = samplingObservations(probabilitiesForObservation);
-                    line = line + " " + target.GetBitValue(bitLocation) + " " + cf.getIndex(a, newObservation).ToString();
+                    line = line + " " + target.GetBitValue(bitLocation) + " " + cf.GetIndex(a, newObservation).ToString();
 
                     counter++;
                     target = newState;

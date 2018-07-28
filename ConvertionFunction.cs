@@ -25,7 +25,7 @@ namespace POMDP
             }
         }
 
-        public int getIndex(Action action, Observation obs)
+        public int GetIndex(Action action, Observation obs)
         {
             List<string> key = obs.getObservationString();
             key.Add(action.ToString());
