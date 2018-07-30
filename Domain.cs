@@ -57,10 +57,11 @@ namespace POMDP
             return (to_ret) / cTrials;
         }
 
-        public void WriteObservationsFile(string filePath, ConvertionFunction cf, Policy p, int numberOfIterations, int numberOfSteps, int bitLocation)
+        public void WriteObservationsFile(string filePath, ConvertionFunction cf, Policy p, int numberOfIterations, int numberOfSteps, int bitLocation, int numberOfObs, int numberOfAutoStates)
         {
-            string[] lines = new string[numberOfIterations];
-            for (int i = 0; i < numberOfIterations; i++)
+            string[] lines = new string[numberOfIterations + 1];
+            lines[0] = numberOfObs.ToString() + " " + numberOfAutoStates;
+            for (int i = 1; i < numberOfIterations; i++)
             {
                 State target = sampleInitialState();
                 int counter = 0;

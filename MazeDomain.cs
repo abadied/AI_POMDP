@@ -92,28 +92,30 @@ namespace POMDP
             }
         }
 
-        // TODO: change!!!
+
         private void SimulateTrialPfsa(Policy p, MazeViewer viewer, List<PFSAutomata> pfsas, ConvertionFunction cf)
         {
             BeliefState bsCurrent = InitialBelief;
-            State sCurrent = bsCurrent.RandomState();
+            State sCurrent = bsCurrent.RandomState(), sNext = null, automataCurrent = null;
             Action a = null;
             Observation o = null;
             int numOfBits = pfsas.Count();
             int numberOfYBits = Convert.ToInt32(Math.Ceiling(Math.Log(Height, 2)));
             int[] bits = new int[numOfBits];
             viewer.CurrentState = (MazeState)sCurrent;
-            viewer.CurrentBelief = bsCurrent;
+            automataCurrent = sCurrent;
             while (!IsGoalState(sCurrent))
             {
-                a = p.GetAction(sCurrent);
-                o = sCurrent.RandomObservation(a); // TODO: need to be an observation of the next state - may change to o-a sequence instead.
+                a = p.GetAction(automataCurrent);
+                sNext = sCurrent.Apply(a);
+                o = sNext.RandomObservation(a); 
                 int nextStateIndex = cf.GetIndex(a, o);
                 for(int i = 0; i < numOfBits; i++)
                 {
                     bits[i] = pfsas[i].GetAutomataResult(nextStateIndex);
                 }
-                sCurrent = GetNextState(bits, numberOfYBits);
+                automataCurrent = GetNextState(bits, numberOfYBits);
+                sCurrent = sNext;
                 viewer.CurrentState = (MazeState)sCurrent;
                 viewer.CurrentObservation = (MazeObservation)o;
                 Thread.Sleep(500);
@@ -121,7 +123,6 @@ namespace POMDP
         }
         private State GetNextState(int[] bits, int numOfYBits)
         {
-            // TODO: implement!!
             int directionNum = bits[0] + bits[1] * 2;
             int iY = 0;
             int iX = 0;

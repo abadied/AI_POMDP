@@ -17,15 +17,17 @@ namespace POMDP
             Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
             Debug.Listeners.Add(new TextWriterTraceListener(fs));
             MazeDomain maze = new MazeDomain(path + "/Domains/Maze3.txt");
-
             // POMDP PROB AUTOMATA //
 
             // Create obs files
+            Boolean createObsFiles = true;
+
             List<Action> actions = new List<Action> {
             new MazeAction("TurnLeft"),
             new MazeAction("TurnRight"),
             new MazeAction("Forward")
             };
+            
 
             List<Observation> observations = new List<Observation>();
             for (int i = 0; i < 16; i++)
@@ -40,12 +42,16 @@ namespace POMDP
             int numberOfSteps = 100;
             int currBit = 0;
             int numOfAutomatas = Convert.ToInt32(Math.Ceiling(Math.Log(maze.Width * maze.Height, 2)));
-            for (currBit = 0; currBit < numOfAutomatas; currBit++)
+            int numberOfAutomataStates = 10;
+            if (createObsFiles)
+            {
+                for (currBit = 0; currBit < numOfAutomatas; currBit++)
             {
                 string Path = startPath + currBit.ToString() + endPath;
-                maze.WriteObservationsFile(Path, cf, p0, numberOfIterations, numberOfSteps, currBit);
+                maze.WriteObservationsFile(Path, cf, p0, numberOfIterations, numberOfSteps, currBit, actions.Count() * observations.Count(), numberOfAutomataStates);
             }
-
+            }
+            else { 
             // Read Prob automatas
             string[] automataFilesPathes = new string[numOfAutomatas];
             string startAutomataPath = "automata";
@@ -67,7 +73,7 @@ namespace POMDP
             MazeViewer viewer = new MazeViewer(maze);
             viewer.Start();
             maze.SimulatePolicyPfsa(mdpVf, 10, viewer, pfsas, cf);
-
+            }
             // POMDP PROB AUTOMATA //
 
 

@@ -7,7 +7,8 @@ namespace POMDP
 {
     class MazeState : State
     {
-        public const double ActionSuccessProbability = 0.9;
+        //public const double ActionSuccessProbability = 0.9;
+        public const double ActionSuccessProbability = 1.0; // stage 1 test on deterministic actions.
 
         public int X{ get; private set;}
         public int Y{ get; private set;}
@@ -27,9 +28,12 @@ namespace POMDP
             sizeDomX = md.Width;
             sizeDomY = md.Height;
             int amountOfDirections = 4;
-            int numOfBits = Convert.ToInt32(Math.Ceiling(Math.Log(sizeDomX * sizeDomY * amountOfDirections, 2)));
+            int xNumBits = Convert.ToInt32(Math.Ceiling(Math.Log(sizeDomX, 2)));
+            int yNumBits = Convert.ToInt32(Math.Ceiling(Math.Log(sizeDomY, 2)));
+            int directionNumBits = Convert.ToInt32(Math.Ceiling(Math.Log(amountOfDirections, 2)));
+            int numOfBits = xNumBits + yNumBits + directionNumBits;
             bits = new int[numOfBits];
-            int value = Convert.ToInt32((X * sizeDomX + Y) * amountOfDirections + Convert.ToInt32(d)); // TODO: Test!
+            int value = Convert.ToInt32(Convert.ToInt32(d) + Math.Pow(2, directionNumBits) * Y + Math.Pow(2, directionNumBits + yNumBits) * X);
             for(int i = 0; i < numOfBits; i++)
             {
                 if(value >= 0)

@@ -7,7 +7,8 @@ namespace POMDP
 {
     class MazeObservation : Observation
     {
-        public const double WALL_DETECTION_ACCURACY = 0.9;
+        //public const double WALL_DETECTION_ACCURACY = 0.9;
+        public const double WALL_DETECTION_ACCURACY = 1.0; // stage 1 observation are deterministic.
         public bool FrontWall{ get; private set;}
         public bool LeftWall{ get; private set;}
         public bool RightWall{ get; private set;}
