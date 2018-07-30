@@ -49,7 +49,7 @@ namespace POMDP
             // Read Prob automatas
             string[] automataFilesPathes = new string[numOfAutomatas];
             string startAutomataPath = "automata";
-            string endAutomataPath = ".txt";
+            string endAutomataPath = ".fsm";
             for(int i = 0; i < numOfAutomatas; i++)
             {
                 automataFilesPathes[i] = startAutomataPath + i.ToString() + endAutomataPath;

@@ -107,7 +107,7 @@ namespace POMDP
             while (!IsGoalState(sCurrent))
             {
                 a = p.GetAction(sCurrent);
-                o = sCurrent.RandomObservation(a);
+                o = sCurrent.RandomObservation(a); // TODO: need to be an observation of the next state - may change to o-a sequence instead.
                 int nextStateIndex = cf.GetIndex(a, o);
                 for(int i = 0; i < numOfBits; i++)
                 {

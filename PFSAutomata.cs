@@ -15,13 +15,13 @@ namespace POMDP
             foreach(string line in lines)
             {
                 string[] parsedLine = line.Split(' ');
-                int lineCurrentState = Int32.Parse(parsedLine[0]);
-                int lineNextState = Int32.Parse(parsedLine[1]);
-                int lineSymbol = Int32.Parse(parsedLine[2]);
-                int lineProb = Int32.Parse(parsedLine[3]);
+                int lineCurrentState = Convert.ToInt32(parsedLine[0]);
+                int lineNextState = Convert.ToInt32(parsedLine[1]);
+                int lineSymbol = Convert.ToInt32(parsedLine[2]);
+                double lineProb = Convert.ToDouble(parsedLine[3]);
                 int[] firstKey = new int[] { lineCurrentState, lineSymbol };
                 KeyValuePair<int, double> firstValue = new KeyValuePair<int, double>(lineNextState, lineProb);
-                if (probDictionary.ContainsKey(firstKey))
+                if (!probDictionary.ContainsKey(firstKey))
                 {
                     probDictionary.Add(firstKey, new List<KeyValuePair<int, double>>());
                 }
