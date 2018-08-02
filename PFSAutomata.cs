@@ -63,15 +63,16 @@ namespace POMDP
             Random rand = new Random();
             double r = rand.NextDouble();
             List<KeyValuePair<int, double>> nextStatesList = GetDictionaryValue(new int[] { currentState, symbol });
-            int lastState = nextStatesList.ElementAt(0).Key;
+            double percentage = 0.0;
             foreach(KeyValuePair<int, double> kvp in nextStatesList)
             {
-                if(kvp.Value > r)
+                percentage = percentage + kvp.Value;
+                if(percentage >= r)
                 {
-                    currentState = lastState;
+                    currentState = kvp.Key;
                     break;
                 }
-                lastState = kvp.Key;
+               
             }
         }
         
@@ -97,7 +98,7 @@ namespace POMDP
                     if (!found)
                     {
                         List<KeyValuePair<int, double>> probList = new List<KeyValuePair<int, double>>();
-                        double uProb = 1 / numOfStates;
+                        double uProb = 1 / (double)numOfStates;
 
                         for (int k = 0; k < numOfStates; k++)
                         {
@@ -127,13 +128,18 @@ namespace POMDP
             List<KeyValuePair<int, double>> zeroList = GetDictionaryValue(new int[] { currentState, 0 });
             foreach(KeyValuePair<int, double> kvp in oneList)
             {
-                sumOne += kvp.Value;
+                sumOne = sumOne + kvp.Value;
             }
 
             foreach(KeyValuePair<int, double> kvp in zeroList)
             {
-                sumZero += kvp.Value;
+                sumZero = sumZero + kvp.Value;
             }
+
+            // noramlize sums for selection
+            double totalSum = sumOne + sumZero;
+            sumZero = sumZero / totalSum;
+            sumOne = sumOne / totalSum;
             if(sumZero > sumOne)
             {
                 if(r > sumOne)
@@ -200,24 +206,32 @@ namespace POMDP
 
             foreach (KeyValuePair<int[], List<KeyValuePair<int, double>>> entry in probDictionary)
             {
-                // sum all probabilitys
-                double probSum = 0;
-                List<KeyValuePair<int, double>> normedList = new List<KeyValuePair<int, double>>();
-
-                foreach (KeyValuePair<int, double> probTuple in entry.Value)
+                if(entry.Key[1] == 0 || entry.Key[1] == 1)
                 {
-                    probSum = probSum + probTuple.Value;
+                    normedprobDictionary.Add(entry.Key, entry.Value);
                 }
-
-                // normalize them
-                foreach (KeyValuePair<int, double> probTuple in entry.Value)
+                else
                 {
-                    normedList.Add(new KeyValuePair<int, double> (probTuple.Key, probTuple.Value / probSum));
-                }
+                    // sum all probabilitys
+                    double probSum = 0.0;
+                    List<KeyValuePair<int, double>> normedList = new List<KeyValuePair<int, double>>();
 
-                //  sort list and update the new doctionary
-                normedList.Sort((x, y) => y.Value.CompareTo(x.Value));
-                normedprobDictionary.Add(entry.Key, normedList);
+                    foreach (KeyValuePair<int, double> probTuple in entry.Value)
+                    {
+                        probSum = probSum + probTuple.Value;
+                    }
+
+                    // normalize them
+                    foreach (KeyValuePair<int, double> probTuple in entry.Value)
+                    {
+                        normedList.Add(new KeyValuePair<int, double>(probTuple.Key, probTuple.Value / probSum));
+                    }
+
+                    //  sort list and update the new doctionary
+                    normedList.Sort((x, y) => x.Value.CompareTo(y.Value));
+                    normedprobDictionary.Add(entry.Key, normedList);
+                }
+                
             }
             //replace old dictionary with normed one.
             probDictionary = normedprobDictionary;

@@ -97,7 +97,6 @@ namespace POMDP
 
         private void SimulateTrialPfsa(Policy p, MazeViewer viewer, List<PFSAutomata> pfsas, ConvertionFunction cf)
         {
-            BeliefState bsCurrent = InitialBelief;
             State sCurrent = GetInitalState(), sNext = null, automataCurrent = null;
             Action a = null;
             Observation o = null;
@@ -111,8 +110,7 @@ namespace POMDP
             {
                 bits[i] = pfsas[i].GetInitialValue();
             }
-            automataCurrent = automataCurrent = GetNextState(bits, numberOfYBits);
-
+            automataCurrent = GetNextState(bits, numberOfYBits);
             while (!IsGoalState(sCurrent))
             {
                 a = p.GetAction(automataCurrent);
@@ -123,8 +121,14 @@ namespace POMDP
                 {
                     bits[i] = pfsas[i].GetAutomataResult(nextStateIndex);
                 }
-                automataCurrent = GetNextState(bits, numberOfYBits);
-                sCurrent = sNext;
+                // add check for new state - if legal.
+                MazeState automataNew = (MazeState)GetNextState(bits, numberOfYBits);
+                if(!BlockedSquare(automataNew.X, automataNew.Y))
+                {
+                    automataCurrent = automataNew;
+                    sCurrent = sNext;
+                }
+
                 viewer.CurrentState = (MazeState)sCurrent;
                 viewer.CurrentObservation = (MazeObservation)o;
                 Thread.Sleep(500);
@@ -188,7 +192,7 @@ namespace POMDP
         public override bool IsGoalState(State s)
         {
             MazeState ms = (MazeState)s;
-            return ms.X == -1 && ms.Y == -1;
+            return ms.X == m_iGoalSquareX && ms.Y == -m_iGoalSquareY;
         }
 
         private void LoadMaze(string sMazeFile)
@@ -275,7 +279,6 @@ namespace POMDP
                     }
                 }
             }
-            m_lStates.Add(new MazeState(-1, -1, MazeState.Direction.North, this));
         }
 
         public override State GetState(int iStateIdx)

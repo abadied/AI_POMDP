@@ -42,10 +42,6 @@ namespace POMDP
                     value = value / 2;
                     bits[i] = currBit;
                 }
-                else
-                {
-                    bits[i] = -1;
-                }
 
             }
         }
@@ -92,9 +88,9 @@ namespace POMDP
         public override IEnumerable<State> Successors(Action a)
         {
             MazeAction ma = (MazeAction)a;
-            if (m_mdMaze.IsTargetSqaure(this) && ma.Name == "Forward")
+            if (m_mdMaze.IsTargetSqaure(this))
             {
-                yield return new MazeState(-1, -1, Direction.North, m_mdMaze);
+                yield return this;
             }
             else
             {
@@ -107,12 +103,10 @@ namespace POMDP
 
         private MazeState Apply(MazeAction ma, bool bSuccess)
         {
-            if (m_mdMaze.IsTargetSqaure(this) && ma.Name == "Forward")
+            if (m_mdMaze.IsTargetSqaure(this))
             {
-                return new MazeState(-1, -1, Direction.North, m_mdMaze);
-            }
-            if (X == -1 && Y == -1)
                 return this;
+            }
             if (!bSuccess)
                 return this;
             if (ma.Name == "TurnLeft")

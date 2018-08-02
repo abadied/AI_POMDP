@@ -45,9 +45,9 @@ namespace POMDP
             string startPath = "obs";
             string endPath = ".obs";
             int numberOfIterations = 1000;
-            int numberOfSteps = 1000;
+            int numberOfSteps = 100;
             int currBit = 0;
-            int numberOfAutomataStates = 10;
+            int numberOfAutomataStates = 4;
             if (createObsFiles)
             {
                 for (currBit = 0; currBit < numOfAutomatas; currBit++)
@@ -73,7 +73,7 @@ namespace POMDP
             foreach(PFSAutomata pfsa in pfsas)
             {
                 pfsa.NormalizeAutoamta();
-                pfsa.CompleteUnknownTransitions(48, 10);
+                pfsa.CompleteUnknownTransitions(49, 4);
             }
 
             // Run MDP Valueiteration 

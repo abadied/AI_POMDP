@@ -85,6 +85,7 @@ namespace POMDP
 
                     counter++;
                     target = newState;
+                    
                 }
                 lines[i] = line;
             }
