@@ -16,11 +16,17 @@ namespace POMDP
             FileStream fs = new FileStream(path + "Debug.txt", FileMode.Create);
             Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
             Debug.Listeners.Add(new TextWriterTraceListener(fs));
-            MazeDomain maze = new MazeDomain(path + "/Domains/Maze3.txt");
+            MazeDomain maze = new MazeDomain(path + "/Domains/Maze1.txt");
             // POMDP PROB AUTOMATA //
 
+            int amountOfDirections = 4;
+            int xNumBits = Convert.ToInt32(Math.Ceiling(Math.Log(maze.Width, 2)));
+            int yNumBits = Convert.ToInt32(Math.Ceiling(Math.Log(maze.Height, 2)));
+            int directionNumBits = Convert.ToInt32(Math.Ceiling(Math.Log(amountOfDirections, 2)));
+            int numOfAutomatas = xNumBits + yNumBits + directionNumBits;
+
             // Create obs files
-            Boolean createObsFiles = true;
+            Boolean createObsFiles = false;
 
             List<Action> actions = new List<Action> {
             new MazeAction("TurnLeft"),
@@ -37,11 +43,10 @@ namespace POMDP
             RandomPolicy p0 = new RandomPolicy(maze);
 
             string startPath = "obs";
-            string endPath = ".txt";
-            int numberOfIterations = 100;
-            int numberOfSteps = 100;
+            string endPath = ".obs";
+            int numberOfIterations = 1000;
+            int numberOfSteps = 1000;
             int currBit = 0;
-            int numOfAutomatas = Convert.ToInt32(Math.Ceiling(Math.Log(maze.Width * maze.Height, 2)));
             int numberOfAutomataStates = 10;
             if (createObsFiles)
             {
@@ -63,6 +68,13 @@ namespace POMDP
 
             PFSAParser pfsaParser = new PFSAParser(automataFilesPathes);
             List<PFSAutomata> pfsas = pfsaParser.GetAutomatas();
+            
+            // noramlized automatas
+            foreach(PFSAutomata pfsa in pfsas)
+            {
+                pfsa.NormalizeAutoamta();
+                pfsa.CompleteUnknownTransitions(48, 10);
+            }
 
             // Run MDP Valueiteration 
             double epsilon = 0.5;

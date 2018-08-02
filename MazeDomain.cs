@@ -17,6 +17,8 @@ namespace POMDP
         private List<State> m_lStates;
         public int Width { get { return m_cX; } }
         public int Height { get { return m_cY; } }
+        public int XGoal { get { return m_iGoalSquareX; } }
+        public int YGoal { get { return m_iGoalSquareY; } }
 
         public MazeDomain(string sFileName)
         {
@@ -96,14 +98,21 @@ namespace POMDP
         private void SimulateTrialPfsa(Policy p, MazeViewer viewer, List<PFSAutomata> pfsas, ConvertionFunction cf)
         {
             BeliefState bsCurrent = InitialBelief;
-            State sCurrent = bsCurrent.RandomState(), sNext = null, automataCurrent = null;
+            State sCurrent = GetInitalState(), sNext = null, automataCurrent = null;
             Action a = null;
             Observation o = null;
             int numOfBits = pfsas.Count();
             int numberOfYBits = Convert.ToInt32(Math.Ceiling(Math.Log(Height, 2)));
             int[] bits = new int[numOfBits];
             viewer.CurrentState = (MazeState)sCurrent;
-            automataCurrent = sCurrent;
+
+            // get intialize state from automata
+            for(int i = 0; i < numOfBits; i++)
+            {
+                bits[i] = pfsas[i].GetInitialValue();
+            }
+            automataCurrent = automataCurrent = GetNextState(bits, numberOfYBits);
+
             while (!IsGoalState(sCurrent))
             {
                 a = p.GetAction(automataCurrent);
@@ -126,15 +135,16 @@ namespace POMDP
             int directionNum = bits[0] + bits[1] * 2;
             int iY = 0;
             int iX = 0;
-            int multyplier = 4;
-            for(int i = 2; i < numOfYBits; i++)
+            int multyplier = 1;
+            for(int i = 2; i < 2 + numOfYBits; i++)
             {
-                iY += bits[i] * multyplier;
+                iY = iY + bits[i] * multyplier;
                 multyplier *= 2;
             }
-            for (int i = numOfYBits; i < bits.Length; i++)
+            multyplier = 1;
+            for (int i = 2 + numOfYBits; i < bits.Length; i++)
             {
-                iX += bits[i] * multyplier;
+                iX = iX + bits[i] * multyplier;
                 multyplier *= 2;
             }
 
@@ -273,6 +283,16 @@ namespace POMDP
             if (m_lStates == null)
                 InitStateList();
             return m_lStates[iStateIdx];
+        }
+
+        // randomize first state among 3 first state in states list - for know.
+        public override State GetInitalState()
+        {
+            Random rand = new Random();
+            int stateIdx = rand.Next(0, 3);
+            if (m_lStates == null)
+                InitStateList();
+            return m_lStates.ElementAt(stateIdx);
         }
 
 

@@ -39,8 +39,17 @@ namespace POMDP
 
         public override Action GetAction(State s)
         {
-            if (m_dBestActions.ContainsKey(s))
-                return m_dBestActions[s];
+            foreach(State st in m_dBestActions.Keys)
+            {
+                MazeState ms = (MazeState)st;
+                if (ms.Equals(s))
+                {
+                    Action a = m_dBestActions[st];
+                    return a;
+                }
+
+            }
+
             return null;
         }
 

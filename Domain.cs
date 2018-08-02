@@ -14,6 +14,7 @@ namespace POMDP
         public abstract BeliefState InitialBelief { get; }
         public abstract double MaxReward { get; }
         public abstract bool IsGoalState(State s);
+        public abstract State GetInitalState();
         public abstract State GetState(int iStateIdx);
         public double DiscountFactor { get; protected set; }
         public double ComputeAverageDiscountedReward(Policy p, int cTrials, int cStepsPerTrial)
@@ -63,7 +64,7 @@ namespace POMDP
             lines[0] = numberOfObs.ToString() + " " + numberOfAutoStates;
             for (int i = 1; i < numberOfIterations; i++)
             {
-                State target = sampleInitialState();
+                State target = GetInitalState();
                 int counter = 0;
                 string line = "";
                 while (counter < numberOfSteps)
@@ -80,7 +81,7 @@ namespace POMDP
                         probabilitiesForObservation.Add(new KeyValuePair<Observation, double>(obs, sum));
                     }
                     Observation newObservation = samplingObservations(probabilitiesForObservation);
-                    line = line + " " + target.GetBitValue(bitLocation) + " " + cf.GetIndex(a, newObservation).ToString();
+                    line = line + target.GetBitValue(bitLocation) + " " + cf.GetIndex(a, newObservation).ToString() + " ";
 
                     counter++;
                     target = newState;

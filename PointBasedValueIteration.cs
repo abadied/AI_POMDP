@@ -40,6 +40,7 @@ namespace POMDP
             //your code here
             throw new NotImplementedException();
         }
+
         private AlphaVector G(Action a, Observation o, AlphaVector av)
         {
             if (!m_dGCache.ContainsKey(av))
