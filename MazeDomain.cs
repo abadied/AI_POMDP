@@ -90,6 +90,7 @@ namespace POMDP
             int iTrial = 0;
             for (iTrial = 0; iTrial < cTrials; iTrial++)
             {
+                Debug.WriteLine("starting iteration number: " + iTrial.ToString());
                 SimulateTrialPfsa(p, viewer, pfsas, cf);
             }
         }
@@ -98,6 +99,8 @@ namespace POMDP
         private void SimulateTrialPfsa(Policy p, MazeViewer viewer, List<PFSAutomata> pfsas, ConvertionFunction cf)
         {
             State sCurrent = GetInitalState(), sNext = null, automataCurrent = null;
+            int stateBitsCounter = 0;
+            int bitDiffCoutner = 0;
             Action a = null;
             Observation o = null;
             int numOfBits = pfsas.Count();
@@ -105,14 +108,28 @@ namespace POMDP
             int[] bits = new int[numOfBits];
             viewer.CurrentState = (MazeState)sCurrent;
 
-            // get intialize state from automata
-            for(int i = 0; i < numOfBits; i++)
+            // sample intialize *legal* state from automata: TODO: fix ilegal first state
+            bool legalFirstState = false;
+            while (!legalFirstState)
             {
-                bits[i] = pfsas[i].GetInitialValue();
+                for (int i = 0; i < numOfBits; i++)
+                {
+                    bits[i] = pfsas[i].GetInitialValue();
+                }
+                MazeState initState = (MazeState)GetNextState(bits, numberOfYBits);
+                if (!BlockedSquare(initState.X, initState.Y))
+                {
+                    legalFirstState = true;
+                    automataCurrent = initState;
+                }
             }
-            automataCurrent = GetNextState(bits, numberOfYBits);
+            
             while (!IsGoalState(sCurrent))
             {
+                // increment state counter
+                stateBitsCounter = stateBitsCounter + bits.Length;
+                
+                // perform simulation
                 a = p.GetAction(automataCurrent);
                 sNext = sCurrent.Apply(a);
                 o = sNext.RandomObservation(a); 
@@ -121,7 +138,15 @@ namespace POMDP
                 {
                     bits[i] = pfsas[i].GetAutomataResult(nextStateIndex);
                 }
-                // add check for new state - if legal.
+
+                // calculate difference in bits real vs automata
+                for(int idx = 0; idx < bits.Length; idx++)
+                {
+                    int realNextBit = Convert.ToInt32(sNext.GetBitValue(idx));
+                    if (realNextBit != bits[idx])
+                        bitDiffCoutner = bitDiffCoutner + 1;
+                }
+                // check if new state is legal.
                 MazeState automataNew = (MazeState)GetNextState(bits, numberOfYBits);
                 if(!BlockedSquare(automataNew.X, automataNew.Y))
                 {
@@ -132,7 +157,12 @@ namespace POMDP
                 viewer.CurrentState = (MazeState)sCurrent;
                 viewer.CurrentObservation = (MazeObservation)o;
                 Thread.Sleep(500);
+
             }
+
+            // print mean of bit differneces of all states
+            double bitDiffMean = bitDiffCoutner / (double)stateBitsCounter;
+            Debug.WriteLine("Mean of wrong bits: " + bitDiffMean.ToString());
         }
         private State GetNextState(int[] bits, int numOfYBits)
         {
@@ -192,7 +222,7 @@ namespace POMDP
         public override bool IsGoalState(State s)
         {
             MazeState ms = (MazeState)s;
-            return ms.X == m_iGoalSquareX && ms.Y == -m_iGoalSquareY;
+            return ms.X == m_iGoalSquareX && ms.Y == m_iGoalSquareY;
         }
 
         private void LoadMaze(string sMazeFile)

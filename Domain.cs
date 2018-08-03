@@ -70,7 +70,8 @@ namespace POMDP
                 while (counter < numberOfSteps)
                 {
 
-                    Action a = p.GetRandAction(target);
+                    //Action a = p.GetRandAction(target); // randon policy
+                    Action a = p.GetAction(target); // improved random policy
                     State newState = target.Apply(a: a);
                     List<KeyValuePair<Observation, double>> probabilitiesForObservation = new List<KeyValuePair<Observation, double>>();
                     double sum = 0.0;

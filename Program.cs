@@ -47,7 +47,8 @@ namespace POMDP
             int numberOfIterations = 1000;
             int numberOfSteps = 100;
             int currBit = 0;
-            int numberOfAutomataStates = 4;
+            int numberOfAutomataStates = 10;
+            int numOfDifferentSynbols = 16 * actions.Count() + 1; 
             if (createObsFiles)
             {
                 for (currBit = 0; currBit < numOfAutomatas; currBit++)
@@ -73,7 +74,7 @@ namespace POMDP
             foreach(PFSAutomata pfsa in pfsas)
             {
                 pfsa.NormalizeAutoamta();
-                pfsa.CompleteUnknownTransitions(49, 4);
+                pfsa.CompleteUnknownTransitions(numOfDifferentSynbols, numberOfAutomataStates);
             }
 
             // Run MDP Valueiteration 
