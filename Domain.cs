@@ -60,14 +60,15 @@ namespace POMDP
 
         public void WriteObservationsFile(string filePath, ConvertionFunction cf, Policy p, int numberOfIterations, int numberOfSteps, int bitLocation, int numberOfObs, int numberOfAutoStates)
         {
-            string[] lines = new string[numberOfIterations + 1];
-            lines[0] = numberOfObs.ToString() + " " + numberOfAutoStates;
-            for (int i = 1; i < numberOfIterations; i++)
+            string[] lines = new string[numberOfIterations];
+            //lines[0] = numberOfObs.ToString() + " " + numberOfAutoStates; // no need
+            //string[] lines = new string[numberOfIterations * numberOfSteps * 2];
+            for (int i = 0; i < numberOfIterations; i++)
             {
                 State target = GetInitalState();
                 int counter = 0;
                 string line = "";
-                while (counter < numberOfSteps)
+                while (counter < numberOfSteps * 2)
                 {
 
                     //Action a = p.GetRandAction(target); // randon policy
@@ -83,10 +84,14 @@ namespace POMDP
                     }
                     Observation newObservation = samplingObservations(probabilitiesForObservation);
                     line = line + target.GetBitValue(bitLocation) + " " + cf.GetIndex(a, newObservation).ToString() + " ";
+                    // testing new version
+                    //lines[i * numberOfSteps * 2 + counter] = target.GetBitValue(bitLocation);
+                    //lines[i * numberOfSteps * 2 + counter + 1] = cf.GetIndex(a, newObservation).ToString();
 
-                    counter++;
+                    counter+=2;
                     target = newState;
-                    
+
+
                 }
                 lines[i] = line;
             }

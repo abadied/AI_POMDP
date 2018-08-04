@@ -123,7 +123,6 @@ namespace POMDP
                     automataCurrent = initState;
                 }
             }
-            
             while (!IsGoalState(sCurrent))
             {
                 // increment state counter

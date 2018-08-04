@@ -45,9 +45,9 @@ namespace POMDP
             string startPath = "obs";
             string endPath = ".obs";
             int numberOfIterations = 1000;
-            int numberOfSteps = 100;
+            int numberOfSteps = 30;
             int currBit = 0;
-            int numberOfAutomataStates = 10;
+            int numberOfAutomataStates = 20;
             int numOfDifferentSynbols = 16 * actions.Count() + 1; 
             if (createObsFiles)
             {

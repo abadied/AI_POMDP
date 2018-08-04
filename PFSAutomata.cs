@@ -40,7 +40,9 @@ namespace POMDP
                     // if key is not inside the dictionary create the list and add the value.
                     if (!found)
                     {
-                        probDictionary.Add(firstKey, new List<KeyValuePair<int, double>>());
+                        List<KeyValuePair<int, double>> newList = new List<KeyValuePair<int, double>>();
+                        newList.Add(firstValue);
+                        probDictionary.Add(firstKey, newList);
                     }
                     
                 }
